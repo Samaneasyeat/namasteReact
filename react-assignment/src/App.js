@@ -32,18 +32,39 @@ function App() {
     setIsLoading(true);
 
     try {
-      // Using a free AI model from Hugging Face
+      // Option 1: Mock AI response (for testing)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Generate a simple response based on user input
+      const mockResponse = generateMockResponse(input);
+      
+      const aiResponse = {
+        id: Date.now() + 1,
+        text: mockResponse,
+        sender: 'ai',
+        timestamp: new Date().toLocaleTimeString()
+      };
+
+      setMessages(prev => [...prev, aiResponse]);
+
+      // Option 2: Uncomment below to use a different free API
+      /*
       const response = await axios.post(
-        'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium',
+        'https://api.openai.com/v1/chat/completions',
         {
-          inputs: input,
-          options: {
-            wait_for_model: true
-          }
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'user',
+              content: input
+            }
+          ],
+          max_tokens: 150
         },
         {
           headers: {
-            'Authorization': 'Bearer hf_your_actual_token_here',
+            'Authorization': 'Bearer YOUR_OPENAI_API_KEY',
             'Content-Type': 'application/json'
           }
         }
@@ -51,12 +72,14 @@ function App() {
 
       const aiResponse = {
         id: Date.now() + 1,
-        text: response.data[0]?.generated_text || "I'm sorry, I couldn't generate a response. Please try again.",
+        text: response.data.choices[0].message.content,
         sender: 'ai',
         timestamp: new Date().toLocaleTimeString()
       };
 
       setMessages(prev => [...prev, aiResponse]);
+      */
+
     } catch (error) {
       console.error('Error:', error);
       const errorResponse = {
@@ -68,6 +91,29 @@ function App() {
       setMessages(prev => [...prev, errorResponse]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Helper function to generate mock responses
+  const generateMockResponse = (userInput) => {
+    const input = userInput.toLowerCase();
+    
+    if (input.includes('hello') || input.includes('hi')) {
+      return "Hello! How can I help you today?";
+    } else if (input.includes('how are you')) {
+      return "I'm doing well, thank you for asking! How can I assist you?";
+    } else if (input.includes('weather')) {
+      return "I can't check the weather in real-time, but I'd recommend checking a weather app or website for accurate information!";
+    } else if (input.includes('name')) {
+      return "I'm your AI assistant! Nice to meet you!";
+    } else if (input.includes('help')) {
+      return "I'm here to help! You can ask me questions, and I'll do my best to assist you.";
+    } else if (input.includes('thank')) {
+      return "You're welcome! Is there anything else I can help you with?";
+    } else if (input.includes('bye') || input.includes('goodbye')) {
+      return "Goodbye! Have a great day!";
+    } else {
+      return "That's an interesting question! I'm currently running in demo mode, but I'd be happy to help with general questions. For more advanced features, you could integrate with a real AI API like OpenAI or use a different free service.";
     }
   };
 
