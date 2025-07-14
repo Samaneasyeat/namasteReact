@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaBriefcase, FaChevronDown, FaPhone, FaVolumeUp } from 'react-icons/fa';
 import './Navbar.css';
+import LoginModal from './LoginModal';
 
 const Navbar = () => {
   const [showSmeDropdown, setShowSmeDropdown] = useState(false);
   const [showSupportDropdown, setShowSupportDropdown] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const smeDropdownRef = useRef();
   const supportDropdownRef = useRef();
@@ -154,8 +156,9 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-right">
-        <button className="login-btn">Login / Signup</button>
+        <button className="login-btn" onClick={() => setShowLoginModal(true)}>Login / Signup</button>
       </div>
+      {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
     </nav>
   );
 };
