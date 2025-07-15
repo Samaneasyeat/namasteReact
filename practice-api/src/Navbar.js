@@ -1,15 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaBriefcase, FaChevronDown, FaPhone, FaVolumeUp } from 'react-icons/fa';
+import { FaBriefcase, FaChevronDown, FaPhone, FaVolumeUp, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import './Navbar.css';
 import LoginModal from './LoginModal';
+import { useAuth } from './AuthContext';
+import { Link } from 'react-router-dom';
+
+function getDisplayName(user) {
+  if (!user) return '';
+  if (user.includes('@')) {
+    const namePart = user.split('@')[0];
+    return namePart.charAt(0).toUpperCase() + namePart.slice(1);
+  }
+  return user.charAt(0).toUpperCase() + user.slice(1);
+}
 
 const Navbar = () => {
   const [showSmeDropdown, setShowSmeDropdown] = useState(false);
   const [showSupportDropdown, setShowSupportDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const smeDropdownRef = useRef();
   const supportDropdownRef = useRef();
+  const profileDropdownRef = useRef();
+  const { isLoggedIn, user, logout } = useAuth();
 
   const handleSmeToggle = () => {
     setShowSmeDropdown((prev) => !prev);
@@ -35,8 +48,13 @@ const Navbar = () => {
       ) {
         setShowSupportDropdown(false);
       }
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(e.target)
+      ) {
+        setShowProfileDropdown(false);
+      }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -156,7 +174,32 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-right">
-        <button className="login-btn" onClick={() => setShowLoginModal(true)}>Login / Signup</button>
+        {!isLoggedIn ? (
+          <button className="login-btn" onClick={() => setShowLoginModal(true)}>Login / Signup</button>
+        ) : (
+          <div className="profile-menu-wrapper" ref={profileDropdownRef}>
+            <button className="profile-btn" onClick={() => setShowProfileDropdown((v) => !v)}>
+              <span className="profile-icon">
+                {user && user.includes('@') ? user.split('@')[0][0].toUpperCase() : (user ? user[0].toUpperCase() : '?')}
+              </span>
+              <FaChevronDown style={{ marginLeft: '2px' }} />
+            </button>
+            {showProfileDropdown && (
+              <div className="dropdown profile-dropdown">
+                <ul>
+                  <li><Link to="/my-booking">My Booking</Link></li>
+                  <li><Link to="/my-refund">My Refund</Link></li>
+                  <li><Link to="/my-ecash">My eCash</Link></li>
+                  <li><Link to="/my-profile">My Profile</Link></li>
+                  <hr className="profile-dropdown-divider" />
+                  <li onClick={logout} className="logout-option" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <FaSignOutAlt style={{ marginRight: '8px' }} /> Logout
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
     </nav>

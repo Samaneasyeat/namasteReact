@@ -1,42 +1,45 @@
 import React, { useState } from 'react';
 import './LoginModal.css';
+import { useAuth } from './AuthContext';
 
 const LoginModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('personal');
   const [input, setInput] = useState('');
+  const { login } = useAuth();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // You can add validation here
+    login(input);
+    onClose();
+  };
 
   return (
     <div className="login-modal-overlay">
       <div className="login-modal login-modal-2col">
         <div className="login-modal-info-col">
-          <div className="login-modal-illustration">
-            {/* You can add an <img> here for illustration if you want */}
-          </div>
-          <ul className="login-modal-info-list">
-            <li>Unlock Exclusive Deals on every booking</li>
-            <li>Zero Convenience Fee with Yatra Prime</li>
-            <li>Easily View, Modify, or Cancel Bookings</li>
-            <li>and more..</li>
-          </ul>
+          <img src="/login-image.png" alt="Login illustration" className="login-modal-illustration-img" />
         </div>
         <div className="login-modal-form-col">
           <button className="login-modal-close" onClick={onClose}>&times;</button>
           <div className="login-modal-tabs login-modal-tabs-horizontal">
-            <button className={activeTab === 'personal' ? 'active' : ''} onClick={() => setActiveTab('personal')}>Personal Account</button>
-            <button className={activeTab === 'sme' ? 'active' : ''} onClick={() => setActiveTab('sme')}>SME Account</button>
+            <div className="login-modal-tab-group">
+              <button className={activeTab === 'personal' ? 'active' : ''} onClick={() => setActiveTab('personal')}>Personal Account</button>
+              <button className={activeTab === 'sme' ? 'active' : ''} onClick={() => setActiveTab('sme')}>SME Account</button>
+            </div>
           </div>
-          
           <div className="login-modal-content">
-          <p className="login-modal-heading">Login Or Create Account</p>
-          <p className="login-modal-heading">Email Id / Mobile Number</p>
+            <h2>Login or Create an Account</h2>
+            <label className="login-modal-heading" htmlFor="login-input">Email Id / Mobile Number</label>
             <input
+              id="login-input"
               type="text"
               placeholder="Email Id / Mobile Number"
               value={input}
               onChange={e => setInput(e.target.value)}
               className="login-modal-input"
             />
-            <button className="login-modal-login-btn">Login</button>
+            <button className="login-modal-login-btn" onClick={handleLogin}>Login</button>
             <div className="login-modal-terms">
               By proceeding, you agree with our <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a> & Master User Agreement.
             </div>
