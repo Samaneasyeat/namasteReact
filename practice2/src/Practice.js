@@ -1,6 +1,6 @@
 
 //Create a Counter Component
-import React, { useState } from 'react';
+import React, { useState  , useEffect} from 'react';
 import './Practice.css';
 
 const Practice = () => {
@@ -11,6 +11,10 @@ const Practice = () => {
   function handleDecrement(){
     showInc(inc -1);
   }
+  useEffect(()=>{
+    console.log("Count has been updated");
+
+  },[inc])
   return (
     <>
     <div className='show-text'>the Number is : {inc}</div>
