@@ -1,0 +1,33 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.Container{
+   
+    display: flex;
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+    height: 100vh;     
+}
+.inc-btn , .dec-btn{
+ padding:18px 20px;
+ margin-right: 12px;
+ border: none;
+
+
+}
+.show-text {
+    display: flex;
+    /* vertical centering */
+    justify-content: center; /* horizontal centering */     /* full screen height or any specific height */
+    font-size: 24px;
+  }
+  
+.inc-btn {
+    background-color: green;
+    color:#FFFFFF;
+}
+.dec-btn{
+    background-color: red;
+    color:#FFFFFF;
+}
